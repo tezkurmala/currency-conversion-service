@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,18 +16,38 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class CurrencyConversionController {
+
+//	@Autowired
+//	private Environment environment;
+	
 	@Autowired
-	private Environment environment;
+	private CurrencyExchangeServiceProxy currencyExchangeFeignProxy;
+
 	@GetMapping("/currency-conversion/from/{from}/to/{to}/{quantity}")
-	public CurrencyConversion getConvertedCurrency(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity) {
+	public CurrencyConversion getConvertedCurrency(@PathVariable String from, 
+			@PathVariable String to, @PathVariable BigDecimal quantity) {
 		//CurrencyConversion calculatedInfo = new CurrencyConversion(1l, from, to, new BigDecimal(60.04), new BigDecimal(60.04).multiply(quantity));
 		Map<String, String> uriVariables = new HashMap<>();
 		uriVariables.put("from", from);
 		uriVariables.put("to", to);
-		ResponseEntity<CurrencyConversion> exchangeResponseEntity = new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}", CurrencyConversion.class, uriVariables);
+		ResponseEntity<CurrencyConversion> exchangeResponseEntity 
+			= new RestTemplate()
+				.getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+						//CurrencyConversion.class is very much similar to CurrencyExchange.class. So we are good with this tweak.
+						//Otherwise CurrencyExchange.class (client) is to be defined in Currency-Conversion-service (this) project.
+						CurrencyConversion.class, uriVariables);
 		CurrencyConversion calculatedInfo = exchangeResponseEntity.getBody();
 		calculatedInfo.setCalculatedAmount(calculatedInfo.getConversionRate().multiply(quantity));
-		calculatedInfo.setPort(Integer.valueOf(environment.getProperty("local.server.port")));
+//		calculatedInfo.setPort(Integer.valueOf(environment.getProperty("local.server.port")));
+		return calculatedInfo;
+	}
+
+	@GetMapping("/currency-conversion-feign/from/{from}/to/{to}/{quantity}")
+	public CurrencyConversion getConvertedCurrencyUsingFeign(@PathVariable String from, 
+			@PathVariable String to, @PathVariable BigDecimal quantity) {
+		
+		CurrencyConversion calculatedInfo = currencyExchangeFeignProxy.getCurrencyExchange(from, to);
+		calculatedInfo.setCalculatedAmount(calculatedInfo.getConversionRate().multiply(quantity));
 		return calculatedInfo;
 	}
 
