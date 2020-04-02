@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+import brave.sampler.Sampler;
+
 @SpringBootApplication
 
 //Scans for feign clients/proxies in this package
@@ -21,4 +23,7 @@ public class CurrencyConversionServiceApplication {
 		SpringApplication.run(CurrencyConversionServiceApplication.class, args);
 	}
 
+	public Sampler defaultSampler() {
+		return Sampler.ALWAYS_SAMPLE;
+	}
 }

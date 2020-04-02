@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.core.env.Environment;
@@ -22,6 +24,8 @@ public class CurrencyConversionController {
 	
 	@Autowired
 	private CurrencyExchangeServiceProxy currencyExchangeFeignProxy;
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@GetMapping("/currency-conversion/from/{from}/to/{to}/{quantity}")
 	public CurrencyConversion getConvertedCurrency(@PathVariable String from, 
@@ -48,6 +52,8 @@ public class CurrencyConversionController {
 		
 		CurrencyConversion calculatedInfo = currencyExchangeFeignProxy.getCurrencyExchange(from, to);
 		calculatedInfo.setCalculatedAmount(calculatedInfo.getConversionRate().multiply(quantity));
+		logger.info("Conversion Rate {} -> {} * {} is {}", from, to, 
+				calculatedInfo.getConversionRate(), calculatedInfo.getCalculatedAmount());
 		return calculatedInfo;
 	}
 
