@@ -1,0 +1,57 @@
+Limits service
+http://localhost:8080/limits
+
+Actuator
+POST http://localhost:8080/actuator/refresh
+Actuator after having amqp bus enabled - to reload all the properties changes onto all the service instances
+POST http://localhost:8080/actuator/bus-refresh
+
+HAL Browser to access and navigate through Actuator APIs
+http://localhost:8080/browser/index.html
+
+Config Service to expose QA profile/properties of Limits-Service
+http://localhost:8888/limits-service/qa
+limits-service-qa.properties
+Config Service to expose DEV profile/properties of Limits-Service
+http://localhost:8888/limits-service/dev
+limits-service-dev.properties
+Config Service to expose Default profile/properties of Limits-Service
+http://localhost:8888/limits-service/default
+limits-service.properties
+
+Limits service API with Hystrix enabled
+http://localhost:8080/limits-hystrix
+
+Currency Exchange service
+http://localhost:8000/currency-exchange/from/EUR/to/INR
+http://localhost:8000/currency-exchange/from/USD/to/INR
+H2 In-memory database enabled on Currency Exchange service
+data.sql will help load initial data
+http://localhost:8000/h2-console/
+
+After enabling Eureka Naming Server
+http://localhost:8761/
+
+Currency Conversion Service inputs amount and calls Currency exchange service
+Currency Conversion Service
+http://localhost:8100/currency-conversion/from/USD/to/INR/2000
+Currency Conversion Service using Feign proxy
+http://localhost:8100/currency-conversion-feign/from/USD/to/INR/2000
+
+After enabling Zuul API Gateway
+http://localhost:8765/currency-conversion-service/currency-conversion-feign/from/USD/to/INR/2000
+
+Sleuth, Erlang, RabbitMQ if enabled then Zipkin will add value
+Run jar and default port is 9411. Sleuth directly writes to RabbitMQ that will be visible to Zipkin.
+SET RABBIT_URI=amqp://localhost
+java -jar zipkin-server-2.21.0-exec.jar
+Spring detection of Cloud-starter-zipkin and RabbitMQ dependencies will auto configure it write to RabbitMQ
+Zipkin URL
+http://localhost:9411
+Specific Sleuth request ID
+http://localhost:9411/zipkin/traces/884c04541d75b916
+
+Course debugging guide
+https://github.com/in28minutes/in28minutes-initiatives/tree/master/The-in28Minutes-TroubleshootingGuide-And-FAQ
+Course Micro Services code
+https://github.com/in28minutes/spring-microservices

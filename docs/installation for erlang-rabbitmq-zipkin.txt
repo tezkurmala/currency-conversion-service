@@ -1,0 +1,16 @@
+Erlang is required for RabbitMQ to run
+https://www.erlang.org/downloads has following link
+http://erlang.org/download/otp_win64_22.3.exe
+https://www.rabbitmq.com/download.html has following link
+https://dl.bintray.com/rabbitmq/all/rabbitmq-server/3.8.3/rabbitmq-server-3.8.3.exe
+RabbitMQ can be found running as a windows service
+
+Zipkin jar download
+https://zipkin.io/pages/quickstart has following link
+https://search.maven.org/remote_content?g=io.zipkin&a=zipkin-server&v=LATEST&c=exec
+Start zipkin using java command
+Erlang implements AMQP - Advanced Messaging Queue Protocol and this is leveraged by RabbitMQ.
+SET RABBIT_URI=amqp://localhost
+java -jar zipkin-server-2.21.0-exec.jar
+http://localhost:9411/
+http://localhost:9411/zipkin/traces/884c04541d75b916
